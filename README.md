@@ -2,10 +2,11 @@
 
 ## 1. Descripcion del proyecto
 
+Este proyecto implementa una API REST para un pequeño Spotify en el que se incluyen funcionalidades para gestionar usuarios, canciones y playlist.
 
 ## **2. Descripcion de tablas**
 
-1. **Entidad Usuario**:
+### **Entidad Usuario**:
    - Representa un usuario.
    - Propiedades:
       - `idUsuario` (Int): Identificador único del usuario.
@@ -13,25 +14,17 @@
       - `password` (String): Contraseña de usuario.
       - `rol` (String): Rol de usuario (`USER`, `ADMIN` o `ARTIST`).
 
-```kotlin
-data class Usuario(
-    val idUsuario: Int,
-    val username: String,
-    val password: String,
-    val rol: String
-)
-```
-
 ```sql
 CREATE TABLE usuario (
-    idUsuario INTEGER PRIMARY KEY,
-    username VARCHAR(15) NOT NULL,
-    password VARCHAR(50) NOT NULL,
-    rol VARCHAR(5) NOT NULL
+    idUsuario INTEGER PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    rol VARCHAR(10) NOT NULL
 );
 ```
-   
-2. **Entidad Cancion**:
+
+### **Entidad Cancion**:
+Representa una cancion disponible en el sistema.
    - `idCancion` (Int): Identificador único de la canción.
    - `titulo` (String): Título de la canción.
    - `artista` (String): Artista de la canción.
@@ -39,29 +32,19 @@ CREATE TABLE usuario (
    - `fechaPublicacion` (LocalDate): Fecha de publicación de la canción.
    - `duracion` (Int): Duración en minutos de la canción.
 
-```kotlin
-data class Cancion(
-    val idCancion: Int,
-    val titulo: String,
-    val artista: String,
-    val album: String,
-    val fechaPublicacion: LocalDate,
-    val duracion: Int
-)
-```
-
 ```sql
-CREATE TABLE usuario (
-    idCancion INTEGER PRIMARY KEY,
-    titulo VARCHAR(15) NOT NULL,
-    artista VARCHAR(15) NOT NULL,
-    album VARCHAR(20) NOT NULL,
+CREATE TABLE cancion (
+    idCancion INTEGER PRIMARY KEY AUTO_INCREMENT,
+    titulo VARCHAR(100) NOT NULL,
+    artista VARCHAR(100) NOT NULL,
+    album VARCHAR(100) NOT NULL,
     fechaPublicacion DATE NOT NULL,
     duracion INTEGER NOT NULL
 );
 ```
 
-3. **Entidad Playlist**:
+### **Entidad Playlist**:
+Representa una lista de reproduccion de las canciones.
    - `idPlaylist` (Int): Identificador único de la playlist.
    - `cancion` (Cancion): Referencia a la cancion asociada.
    - `titulo` (String): Titulo de la playlist.
@@ -69,26 +52,28 @@ CREATE TABLE usuario (
    - `totalCanciones` (Int): Número total de canciones de la playlist.
    - `duracionTotal` (Int): Duracion total de la playlist.
 
-```kotlin
-data class Playlist(
-    val idPlaylist: Int,
-    val cancion: Cancion,
-    val titulo: String,
-    val breveDescripcion: String,
-    val totalCanciones: Int,
-    val duracionTotal: Int
-)
+```sql
+CREATE TABLE playlist (
+    id_playlist INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id_cancion INTEGER NOT NULL,
+    titulo VARCHAR(100) NOT NULL,
+    breve_descripcion VARCHAR(255) NOT NULL,
+    total_canciones INTEGER NOT NULL,
+    duracion_total INTEGER NOT NULL
+);
 ```
 
+### Relacion entre entidades
+
+- **Cancion y Playlist**: Relacion *Many-to-Many* en la que una cancion puede estar en varias playlists y una playlist puede tener varias canciones.
+- **Aclaracion**: En una relacion Many-to-Many, aunque no genere explicitamente la tabla, JPA se encarga de crearla automáticamente con las configuraciones definidas en las entidades.
 ```sql
-CREATE TABLE usuario (
-    id_playlist INTEGER PRIMARY KEY,
+CREATE TABLE playlists_canciones (
+    id_playlist INTEGER NOT NULL,
     id_cancion INTEGER NOT NULL,
-    titulo VARCHAR(15) NOT NULL,
-    breve_descripcion VARCHAR(200) NOT NULL,
-    total_canciones INTEGER NOT NULL,
-    duracion_total INTEGER NOT NULL,
-   CONSTRAINT FK_Cancion FOREIGN KEY (id_cancion) REFERENCES cancion(id_cancion) ON DELETE CASCADE
+    PRIMARY KEY (id_playlist, id_cancion),
+    CONSTRAINT fk_playlist FOREIGN KEY (id_playlist) REFERENCES playlists (id_playlist) ON DELETE CASCADE,
+    CONSTRAINT fk_cancion FOREIGN KEY (id_cancion) REFERENCES canciones (id_cancion) ON DELETE CASCADE
 );
 ```
 
