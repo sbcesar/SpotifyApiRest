@@ -46,7 +46,7 @@ CREATE TABLE cancion (
 ### **Entidad Playlist**:
 Representa una lista de reproduccion de las canciones.
    - `idPlaylist` (Int): Identificador único de la playlist.
-   - `cancion` (Cancion): Referencia a la cancion asociada.
+   - `cancion` (List< Cancion >): Referencia a la cancion asociada.
    - `titulo` (String): Titulo de la playlist.
    - `breveDescripcion` (String): Breve descripción de la playlist.
    - `totalCanciones` (Int): Número total de canciones de la playlist.
@@ -88,14 +88,20 @@ CREATE TABLE playlists_canciones (
    - *RUTA PÚBLICA* (Cualquier usuario puede acceder a este endpoint)
 
 ### Endpoints para Canciones
+*RUTA PROTEGIDA* Todas las rutas requieren que el usuario esté autenticado para aceder a las mismas.
 - **GET** `/canciones`
   - Devuelve una lista de todas las canciones
-  - *RUTA PROTEGIDA* **ADMIN** (Solo usuarios con `ROL ADMIN` pueden acceder a este recurso)
+  - **ADMIN** (Solo usuarios con `ROL ADMIN` pueden acceder a este recurso)
 - **GET** `/canciones/{idCancion}`
   - Devuelve una canción por su identificador
-  - *RUTA PROTEGIDA* **AUTHENTICATED ROL USER** (Solo usuarios con `ROL USER` que estén registrados correctamente podrán acceder a este recurso)
-  - *RUTA PROTEGIDA* **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
-  - *RUTA PROTEGIDA* **AUTHENTICATED ROL ARTIST** (Solo usuarios con `ROL ARTIST` que estén registrados correctamente podrán acceder a este recurso)
+  - **ROL USER** (Solo usuarios con `ROL USER` que estén registrados correctamente podrán acceder a este recurso)
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Solo usuarios con `ROL ARTIST` que estén registrados correctamente podrán acceder a este recurso)
+- **GET** `/canciones/{titulo}`
+  - Obtiene una cancion por titulo
+  - **ROL USER** (Solo usuarios con `ROL USER` que estén registrados correctamente podrán acceder a este recurso)
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Solo usuarios con `ROL ARTIST` que estén registrados correctamente podrán acceder a este recurso)
 - **POST** `/canciones`
   - Crea una nueva cancion
   - *RUTA PROTEGIDA* **ADMIN** (Solo usuarios con `ROL ADMIN` pueden acceder a este recurso)

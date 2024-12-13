@@ -16,12 +16,12 @@ data class Playlist(
         joinColumns = [JoinColumn(name = "id_playlist", referencedColumnName = "id_playlist")],
         inverseJoinColumns = [JoinColumn(name = "id_cancion", referencedColumnName = "id_cancion")]
     )
-    val cancion: List<Cancion>,
+    val cancion: MutableList<Cancion>,
 
-    @Column(name = "titulo", nullable = false)
+    @Column(name = "titulo", nullable = false, length = 100)
     val titulo: String,
 
-    @Column(name = "breve_descripcion", nullable = false)
+    @Column(name = "breve_descripcion", nullable = false, length = 255)
     val breveDescripcion: String,
 
     @Column(name = "total_canciones", nullable = false)
