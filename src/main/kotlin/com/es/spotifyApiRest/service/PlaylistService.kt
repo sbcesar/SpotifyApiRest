@@ -1,12 +1,9 @@
 package com.es.spotifyApiRest.service
 
-
 import com.es.spotifyApiRest.exceptions.errors.ConflictException
 import com.es.spotifyApiRest.exceptions.errors.NotFoundException
-import com.es.spotifyApiRest.exceptions.errors.ValidationException
 import com.es.spotifyApiRest.model.Cancion
 import com.es.spotifyApiRest.model.Playlist
-import com.es.spotifyApiRest.repository.CancionRepository
 import com.es.spotifyApiRest.repository.PlaylistRepository
 import com.es.spotifyApiRest.utils.Utils
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,9 +14,6 @@ class PlaylistService {
 
     @Autowired
     private lateinit var playlistRepository: PlaylistRepository
-
-    @Autowired
-    private lateinit var cancionRepository: CancionRepository
 
     private var utils = Utils()
 
@@ -66,7 +60,7 @@ class PlaylistService {
     }
 
     // Añade una cancion a la playlist (update)
-    fun addCancionToPlaylist(idPlaylist: String, cancion: Cancion): Playlist {
+    fun addSongInPlaylist(idPlaylist: String, cancion: Cancion): Playlist {
         val id = utils.validateId(idPlaylist)
 
         utils.validateCancion(cancion)
@@ -87,7 +81,7 @@ class PlaylistService {
     }
 
     // Quita una cancion de la playlist
-    fun removeCancionFromPlaylist(idPlaylist: String, cancion: Cancion): Playlist {
+    fun deleteSongFromPlaylist(idPlaylist: String, cancion: Cancion): Playlist {
         val id = utils.validateId(idPlaylist)
 
         if (!playlistRepository.existsById(id.toLong())) {
@@ -97,7 +91,7 @@ class PlaylistService {
         val playlist = playlistRepository.findById(cancion.idCancion.toLong()).get()
 
         if (!playlist.cancion.contains(cancion)) {
-            throw NotFoundException("Cancion with ID ${cancion.idCancion} not found in the playlist with ID $id")
+            throw NotFoundException("Song with ID ${cancion.idCancion} not found in the playlist with ID $id")
         }
 
         playlist.cancion.remove(cancion)
@@ -106,7 +100,7 @@ class PlaylistService {
     }
 
     // Busca una cancion específica de la playlist por título
-    fun searchCancionInPlaylist(idPlaylist: String, titulo: String): Cancion {
+    fun searchCancionInPlaylist(idPlaylist: String, titulo: String): Cancion? {
         val id = utils.validateId(idPlaylist)
 
         if (!playlistRepository.existsById(id.toLong())) {
@@ -116,10 +110,6 @@ class PlaylistService {
         val playlist = playlistRepository.findById(id.toLong()).get()
 
         val cancion = playlist.cancion.find { it.titulo == titulo }
-
-        if (cancion == null) {
-            throw NotFoundException("No se encontró la canción $titulo en la playlist con ID $id")
-        }
 
         return cancion
     }
