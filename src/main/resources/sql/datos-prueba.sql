@@ -1,0 +1,5 @@
+INSERT INTO canciones (id_cancion, titulo, artista, album, duracion, fecha_publicacion) VALUES (1, 'Cancion Uno', 'Artista A', 'Album X', 210, '2023-05-01'), (2, 'Cancion Dos', 'Artista B', 'Album Y', 180, '2023-06-15'), (3, 'Cancion Tres', 'Artista C', 'Album Z', 240, '2023-07-10'), (4, 'Cancion Cuatro', 'Artista D', 'Album W', 200, '2023-08-20'), (5, 'Cancion Cinco', 'Artista E', 'Album V', 230, '2023-09-05');
+
+INSERT INTO playlists (id_playlist, titulo, breve_descripcion, total_canciones, duracion_total) VALUES (1, 'Hits del Verano', 'Las canciones más populares del verano para disfrutar en la playa o la piscina.', 15, 3600), (2, 'Relax y Chill', 'Música relajante para desconectar después de un día largo.', 20, 5400), (3, 'Rock Clásico', 'Los mejores éxitos del rock clásico que nunca pasan de moda.', 12, 4200);
+
+INSERT INTO playlist_canciones (id_cancion, id_playlist) VALUES (1, 1), (2, 1), (3, 2), (4, 2), (5, 3), (1, 3), (3, 1), (4, 3);

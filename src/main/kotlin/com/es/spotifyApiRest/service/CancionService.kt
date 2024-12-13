@@ -10,7 +10,7 @@ class CancionService {
 
     @Autowired
     private lateinit var cancionRepository: CancionRepository
-
+    /*
     // Obtiene todas las canciones (ADMIN y USER)
     fun getAllCanciones(): List<Cancion> {
 
@@ -45,4 +45,5 @@ class CancionService {
     fun deleteCancion(idCancion: String) {
 
     }
+    */
 }
