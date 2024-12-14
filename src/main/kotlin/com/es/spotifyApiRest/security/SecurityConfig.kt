@@ -34,11 +34,12 @@ class SecurityConfig {
     @Bean
     fun securityChain(http: HttpSecurity): SecurityFilterChain {
         return http
-            .csrf { csrf -> csrf.disable() }
+            .csrf { csrf -> csrf.disable() }    // Cross-Site Forgery
             .authorizeHttpRequests { auth -> auth
                 // Aqui van los permisos de los roles para cada endpoint
                 .anyRequest().permitAll()
             }
+            .oauth2ResourceServer { oauth2 -> oauth2.jwt(Customizer.withDefaults())}
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .httpBasic(Customizer.withDefaults())
             .build()
