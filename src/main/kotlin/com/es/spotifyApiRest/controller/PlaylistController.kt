@@ -62,7 +62,7 @@ class PlaylistController {
 
     @PostMapping("/crearPlaylist")
     fun createPlaylist(@RequestBody playlist: Playlist?): ResponseEntity<Playlist> {
-        if (playlist == null) throw ValidationException("Playlist is required")
+        if (playlist == null) throw ValidationException("Playlist is required") // Devolver ResponseEntity 500
 
         try {
             val playlistCreated = playlistService.createPlaylist(playlist)
@@ -112,13 +112,12 @@ class PlaylistController {
         return ResponseEntity(null, HttpStatus.OK)
     }
 
-    @DeleteMapping("/borrarCancion/{id}")
-    fun deleteSongFromPlaylist(@PathVariable id: String?, @RequestBody cancion: Cancion?): ResponseEntity<Playlist?> {
-        if (id.isNullOrBlank()) throw ValidationException("Playlist ID is required")
+    @DeleteMapping("/borrarCancion/{idPlaylist}/{idCancion}")
+    fun deleteSongFromPlaylist(@PathVariable idPlaylist: String?, @PathVariable idCancion: String?): ResponseEntity<Playlist?> {
+        if (idPlaylist.isNullOrBlank()) throw ValidationException("Playlist ID is required")
+        if (idCancion.isNullOrBlank()) throw ValidationException("Playlist ID is required")
 
-        if (cancion == null) throw ValidationException("Cancion is required")
-
-        playlistService.deleteSongFromPlaylist(id, cancion)
+        playlistService.deleteSongFromPlaylist(idPlaylist, idCancion)
         return ResponseEntity(null, HttpStatus.OK)
     }
 }

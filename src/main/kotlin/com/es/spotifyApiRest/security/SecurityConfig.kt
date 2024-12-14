@@ -35,6 +35,10 @@ class SecurityConfig {
     fun securityChain(http: HttpSecurity): SecurityFilterChain {
         return http
             .csrf { csrf -> csrf.disable() }
+            .authorizeHttpRequests { auth -> auth
+                // Aqui van los permisos de los roles para cada endpoint
+                .anyRequest().permitAll()
+            }
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .httpBasic(Customizer.withDefaults())
             .build()

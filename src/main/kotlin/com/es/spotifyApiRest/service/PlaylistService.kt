@@ -4,6 +4,7 @@ import com.es.spotifyApiRest.exceptions.errors.ConflictException
 import com.es.spotifyApiRest.exceptions.errors.NotFoundException
 import com.es.spotifyApiRest.model.Cancion
 import com.es.spotifyApiRest.model.Playlist
+import com.es.spotifyApiRest.repository.CancionRepository
 import com.es.spotifyApiRest.repository.PlaylistRepository
 import com.es.spotifyApiRest.utils.Utils
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,6 +15,9 @@ class PlaylistService {
 
     @Autowired
     private lateinit var playlistRepository: PlaylistRepository
+
+    @Autowired
+    private lateinit var cancionRepository: CancionRepository
 
     private var utils = Utils()
 
@@ -28,7 +32,7 @@ class PlaylistService {
         val id = utils.validateId(idPlaylist)
 
         val playlist = playlistRepository.findById(id.toLong()).orElse(null)
-        return playlist ?: throw NotFoundException("Playlist not found")
+        return playlist ?: throw NotFoundException("Playlist with ID $id not found")
     }
 
     // Crea una nueva playlist
@@ -72,29 +76,42 @@ class PlaylistService {
         val playlist = playlistRepository.findById(id.toLong()).get()
 
         if (playlist.cancion.contains(cancion)) {
-            throw ConflictException("Playlist already exists")
+            throw ConflictException("Sing already exists in the playlist")
+        }
+
+        // Si la cancion es nueva la guarda
+        if (cancion.idCancion == 0) {
+            cancionRepository.save(cancion)
         }
 
         playlist.cancion.add(cancion)
 
-        return playlist
+        val playlistUpdated = playlistRepository.save(playlist)
+
+        return playlistUpdated
     }
 
     // Quita una cancion de la playlist
-    fun deleteSongFromPlaylist(idPlaylist: String, cancion: Cancion): Playlist {
-        val id = utils.validateId(idPlaylist)
+    fun deleteSongFromPlaylist(idPlaylist: String, idCancion: String): Playlist {
+        val idPlaylistVerified = utils.validateId(idPlaylist)
 
-        if (!playlistRepository.existsById(id.toLong())) {
-            throw NotFoundException("Playlist with ID $id not found")
+        val idCancionVerified = utils.validateId(idCancion)
+
+        if (!playlistRepository.existsById(idPlaylistVerified.toLong())) {
+            throw NotFoundException("Playlist with ID $idPlaylistVerified not found")
         }
 
-        val playlist = playlistRepository.findById(cancion.idCancion.toLong()).get()
+        val playlist = playlistRepository.findById(idPlaylistVerified.toLong()).get()
+
+        val cancion = playlist.cancion.find { it.idCancion == idCancionVerified }
 
         if (!playlist.cancion.contains(cancion)) {
-            throw NotFoundException("Song with ID ${cancion.idCancion} not found in the playlist with ID $id")
+            throw NotFoundException("Song with ID $idCancionVerified not found in the playlist with ID $idPlaylistVerified")
         }
 
         playlist.cancion.remove(cancion)
+
+        playlistRepository.save(playlist)
 
         return playlist
     }

@@ -20,6 +20,7 @@ class Utils {
         if (playlist.breveDescripcion.isBlank()) throw ValidationException("El campo (breve descripcion) no puede estar vacio.")
         if (playlist.totalCanciones < 0) throw ValidationException("El campo (total canciones) no puede ser negativo.")
         if (playlist.duracionTotal < 0) throw ValidationException("El campo (duracion total) no puede ser negativo.")
+        if (playlist.cancion == null) throw ValidationException("Playlist's song can not be null.")
     }
 
     fun validateCancion(cancion: Cancion) {

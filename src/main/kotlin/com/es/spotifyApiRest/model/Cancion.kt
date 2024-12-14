@@ -1,5 +1,6 @@
 package com.es.spotifyApiRest.model
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -27,5 +28,6 @@ data class Cancion(
     val duracion: Int,
 
     @ManyToMany(mappedBy = "cancion", fetch = FetchType.LAZY)
-    val playlist: List<Playlist>
+    @JsonBackReference
+    val playlist: MutableList<Playlist> = mutableListOf()
 )

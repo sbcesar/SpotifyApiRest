@@ -1,5 +1,6 @@
 package com.es.spotifyApiRest.model
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.*
 
 @Entity
@@ -11,12 +12,8 @@ data class Playlist(
     val idPlaylist: Int,
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "playlist_canciones",
-        joinColumns = [JoinColumn(name = "id_playlist", referencedColumnName = "id_playlist")],
-        inverseJoinColumns = [JoinColumn(name = "id_cancion", referencedColumnName = "id_cancion")]
-    )
-    val cancion: MutableList<Cancion>,
+    @JsonManagedReference
+    val cancion: MutableList<Cancion> = mutableListOf(),
 
     @Column(name = "titulo", nullable = false, length = 100)
     val titulo: String,
