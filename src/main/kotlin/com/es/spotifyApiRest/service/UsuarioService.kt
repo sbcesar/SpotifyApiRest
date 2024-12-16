@@ -39,9 +39,7 @@ class UsuarioService : UserDetailsService {
 
     fun registerUsuario(usuario: Usuario): Usuario? {
 
-        if (usuario.username.isNullOrBlank()) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Username required")
-        }
+        utils.validateUsuario(usuario)
 
         if (usuarioRepository.findByUsername(usuario.username!!).isPresent) {
             throw ResponseStatusException(HttpStatus.CONFLICT, "Username already exists")
@@ -64,6 +62,8 @@ class UsuarioService : UserDetailsService {
     }
 
     fun updateUser(usuario: Usuario): Usuario {
+        utils.validateUsuario(usuario)
+
         if (!usuarioRepository.existsById(usuario.idUsuario!!.toLong())) {
             throw NotFoundException("User with ID ${usuario.idUsuario} not found")
         }

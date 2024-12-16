@@ -19,6 +19,7 @@ class Utils {
     fun validateUsuario(usuario: Usuario) {
         if (usuario.username.isBlank()) throw ValidationException("Username cannot be null or blank.")
         if (usuario.password.isBlank()) throw ValidationException("Password cannot be null or blank.")
+        if (usuario.roles.isNullOrBlank()) throw ValidationException("Roles cannot be null or blank.")
     }
 
     fun validatePlaylist(playlist: Playlist){

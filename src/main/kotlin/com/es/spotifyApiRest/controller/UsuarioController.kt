@@ -27,8 +27,6 @@ class UsuarioController {
     @Autowired
     private lateinit var tokenService: TokenService
 
-    val utils = Utils()
-
     @GetMapping("/login")
     fun login(@RequestBody usuario: Usuario): ResponseEntity<Any>? {
         val authentication: Authentication
@@ -79,8 +77,6 @@ class UsuarioController {
         if (id.isNullOrBlank()) throw ValidationException("User ID is required")
 
         if (usuario == null) throw ValidationException("User is required")
-
-        utils.validateUsuario(usuario)
 
         usuarioService.getUserById(id) ?: return ResponseEntity(null, HttpStatus.NOT_FOUND)
 
