@@ -1,6 +1,7 @@
 package com.es.spotifyApiRest.exceptions.handler
 
 import com.es.spotifyApiRest.exceptions.errors.ConflictException
+import com.es.spotifyApiRest.exceptions.errors.ValidationException
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.coyote.BadRequestException
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException
@@ -35,7 +36,7 @@ class ApiExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException::class)
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     fun handleNotFound(request: HttpServletRequest, e: Exception): ErrorRespuesta {
         return ErrorRespuesta(e.message!!, request.requestURI)

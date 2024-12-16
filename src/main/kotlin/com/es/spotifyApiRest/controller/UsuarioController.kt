@@ -4,6 +4,7 @@ import com.es.spotifyApiRest.exceptions.errors.ValidationException
 import com.es.spotifyApiRest.model.Usuario
 import com.es.spotifyApiRest.service.TokenService
 import com.es.spotifyApiRest.service.UsuarioService
+import com.es.spotifyApiRest.utils.Utils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -25,6 +26,8 @@ class UsuarioController {
 
     @Autowired
     private lateinit var tokenService: TokenService
+
+    val utils = Utils()
 
     @GetMapping("/login")
     fun login(@RequestBody usuario: Usuario): ResponseEntity<Any>? {
@@ -76,6 +79,8 @@ class UsuarioController {
         if (id.isNullOrBlank()) throw ValidationException("User ID is required")
 
         if (usuario == null) throw ValidationException("User is required")
+
+        utils.validateUsuario(usuario)
 
         usuarioService.getUserById(id) ?: return ResponseEntity(null, HttpStatus.NOT_FOUND)
 

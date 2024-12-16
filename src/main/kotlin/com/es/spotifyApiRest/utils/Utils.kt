@@ -3,6 +3,7 @@ package com.es.spotifyApiRest.utils
 import com.es.spotifyApiRest.exceptions.errors.ValidationException
 import com.es.spotifyApiRest.model.Cancion
 import com.es.spotifyApiRest.model.Playlist
+import com.es.spotifyApiRest.model.Usuario
 import java.time.LocalDate
 
 class Utils {
@@ -13,6 +14,11 @@ class Utils {
         } catch (e: Exception) {
             throw ValidationException("ID must be an integer.")
         }
+    }
+
+    fun validateUsuario(usuario: Usuario) {
+        if (usuario.username.isBlank()) throw ValidationException("Username cannot be null or blank.")
+        if (usuario.password.isBlank()) throw ValidationException("Password cannot be null or blank.")
     }
 
     fun validatePlaylist(playlist: Playlist){
