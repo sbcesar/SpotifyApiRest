@@ -9,6 +9,7 @@ import com.nimbusds.jose.proc.SecurityContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -36,7 +37,34 @@ class SecurityConfig {
         return http
             .csrf { csrf -> csrf.disable() }    // Cross-Site Forgery
             .authorizeHttpRequests { auth -> auth
-                // Aqui van los permisos de los roles para cada endpoint
+
+                // Registro
+                .requestMatchers(HttpMethod.GET, "/usuarios/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/usuarios/register").permitAll()
+
+                // Enpoints -> Usuario
+                .requestMatchers(HttpMethod.GET, "/usuarios/obtenerUsuarios").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/usuarios/obtenerUsuarios/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/usuarios/updateUsuario/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/usuarios/borrarUsuario/{id}").hasRole("ADMIN")
+
+                // Endpoints -> Canciones
+                .requestMatchers(HttpMethod.GET, "/canciones/obtenerCanciones").hasAnyRole("ADMIN", "USER", "ARTIST")
+                .requestMatchers(HttpMethod.GET, "/canciones/obtenerCanciones/{id}").hasAnyRole("ADMIN", "USER", "ARTIST")
+                .requestMatchers(HttpMethod.POST, "/canciones/crearCancion").hasAnyRole("ADMIN", "ARTIST")
+                .requestMatchers(HttpMethod.PUT, "/canciones/actualizarCancion/{id}").hasAnyRole("ADMIN", "ARTIST")
+                .requestMatchers(HttpMethod.DELETE, "/canciones/borrarCancion/{id}").hasRole("ADMIN")
+
+                // Endpoints -> Playlist
+                .requestMatchers(HttpMethod.GET, "/playlists/obtenerPlaylists").hasAnyRole("ADMIN", "USER", "ARTIST")
+                .requestMatchers(HttpMethod.GET, "/playlists/obtenerPlaylist/{id}").hasAnyRole("ADMIN", "USER", "ARTIST")
+                .requestMatchers(HttpMethod.GET, "/playlists/obtenerPlaylist/{id}/{titulo}").hasAnyRole("ADMIN", "USER", "ARTIST")
+                .requestMatchers(HttpMethod.POST, "/playlists/crearPlaylist").hasAnyRole("ADMIN", "USER", "ARTIST")
+                .requestMatchers(HttpMethod.PUT, "/playlists/actualizarPlaylist/{id}").hasAnyRole("ADMIN", "USER", "ARTIST")
+                .requestMatchers(HttpMethod.PUT, "/playlists/agregarCancion/{id}").hasAnyRole("ADMIN", "USER", "ARTIST")
+                .requestMatchers(HttpMethod.DELETE, "/playlists/borrarPlaylist/{id}").hasAnyRole("ADMIN", "USER", "ARTIST")
+                .requestMatchers(HttpMethod.DELETE, "/playlists/borrarCancion/{idPlaylist}/{idCancion}").hasAnyRole("ADMIN", "USER", "ARTIST")
+
                 .anyRequest().permitAll()
             }
             .oauth2ResourceServer { oauth2 -> oauth2.jwt(Customizer.withDefaults())}

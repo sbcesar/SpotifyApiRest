@@ -26,7 +26,7 @@ class UsuarioController {
     @Autowired
     private lateinit var tokenService: TokenService
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     fun login(@RequestBody usuario: Usuario): ResponseEntity<Any>? {
         val authentication: Authentication
 

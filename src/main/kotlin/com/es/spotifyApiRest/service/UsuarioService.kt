@@ -28,9 +28,7 @@ class UsuarioService : UserDetailsService {
     override fun loadUserByUsername(username: String?): UserDetails {
         val usuario = usuarioRepository.findByUsername(username!!).orElseThrow()
 
-        val roles = usuario.rol
-            ?.map { rol -> SimpleGrantedAuthority("ROLE" + rol) }
-            ?.toList() ?: listOf()
+        val roles = listOf(SimpleGrantedAuthority("ROLE_${usuario.roles}"))
 
         return User.builder()
             .username(usuario.username)

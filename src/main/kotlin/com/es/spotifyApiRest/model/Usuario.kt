@@ -16,8 +16,8 @@ data class Usuario(
     @Column(name = "password", nullable = false, length = 255)
     var password: String? = null,
 
-    @Column(name = "role", nullable = false, length = 10)
-    var rol: String? = null // USER, ADMIN, ARTIST
+    @Column(name = "roles", length = 10)
+    var roles: String? // USER, ADMIN, ARTIST
 )
 
 

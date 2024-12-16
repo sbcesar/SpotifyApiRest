@@ -4,6 +4,8 @@
 
 Este proyecto implementa una API REST para un pequeño Spotify en el que se incluyen funcionalidades para gestionar usuarios, canciones y playlist.
 
+---
+
 ## **2. Descripcion de tablas**
 
 ### **Entidad Usuario**:
@@ -19,7 +21,7 @@ CREATE TABLE usuario (
     idUsuario INTEGER PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    rol VARCHAR(10) NOT NULL
+    roles VARCHAR(10)
 );
 ```
 
@@ -77,66 +79,144 @@ CREATE TABLE playlists_canciones (
 );
 ```
 
+---
+
 ## 3. Resumen de los endpoints
 
 ### Endpoints para Usuarios
 - **POST** `/usuarios/login`
   - El usuario inicia sesion con sus datos
   - *RUTA PÚBLICA* (Cualquier usuario puede acceder a este endpoint)
+
 - **POST** `/usuarios/register`
    - El usuario se registra en la base de datos
    - *RUTA PÚBLICA* (Cualquier usuario puede acceder a este endpoint)
 
+- **GET** `/usuarios/obtenerUsuarios`
+  - Devuelve una lista de todos los usuarios
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+
+- **GET** `/usuarios/obtenerUsuarios/{id}`
+  - Devuelve un usuario por su identificador
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+
+- **PUT** `/usuarios/updateUsuario/{id}`
+  - Actualiza un usuario por su identificador
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+
+- **DELETE** `/usuarios/borrarUsuario/{id}`
+  - Borra un usuario por su identificador
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+
 ### Endpoints para Canciones
-*RUTA PROTEGIDA* Todas las rutas requieren que el usuario esté autenticado para aceder a las mismas.
-- **GET** `/canciones`
+*RUTA PROTEGIDA* Todas las rutas requieren que el usuario esté autenticado para acceder a las mismas.
+
+- **GET** `/canciones/obtenerCanciones`
   - Devuelve una lista de todas las canciones
-  - **ADMIN** (Solo usuarios con `ROL ADMIN` pueden acceder a este recurso)
-- **GET** `/canciones/{idCancion}`
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL USER** (Usuarios con `ROL USER` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+- **GET** `/canciones/obtenerCanciones/{id}`
   - Devuelve una canción por su identificador
-  - **ROL USER** (Solo usuarios con `ROL USER` que estén registrados correctamente podrán acceder a este recurso)
   - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
-  - **ROL ARTIST** (Solo usuarios con `ROL ARTIST` que estén registrados correctamente podrán acceder a este recurso)
-- **GET** `/canciones/{titulo}`
-  - Obtiene una cancion por titulo
-  - **ROL USER** (Solo usuarios con `ROL USER` que estén registrados correctamente podrán acceder a este recurso)
-  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
-  - **ROL ARTIST** (Solo usuarios con `ROL ARTIST` que estén registrados correctamente podrán acceder a este recurso)
-- **POST** `/canciones`
+  - **ROL USER** (Usuarios con `ROL USER` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+- **POST** `/canciones/crearCancion`
   - Crea una nueva cancion
-  - *RUTA PROTEGIDA* **ADMIN** (Solo usuarios con `ROL ADMIN` pueden acceder a este recurso)
-  - *RUTA PROTEGIDA* **AUTHENTICATED ROL ARTIST** (Solo usuarios con `ROL ARTIST` que estén registrados correctamente podrán acceder a este recurso)
-- **PUT** `/canciones/{idCancion}`
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+- **PUT** `/canciones/actualizarCancion/{id}`
   - Actualiza una cancion por su identificador
-  - *RUTA PROTEGIDA* **ADMIN** (Solo usuarios con `ROL ADMIN` pueden acceder a este recurso)
-  - *RUTA PROTEGIDA* **AUTHENTICATED ROL ARTIST** (Solo usuarios con `ROL ARTIST` que estén registrados correctamente podrán acceder a este recurso)
-- **DELETE** `/canciones/{idCancion}`
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+- **DELETE** `/canciones//borrarCancion/{id}`
   - Borra una cancion por su identificador
-  - *RUTA PROTEGIDA* **ADMIN** (Solo usuarios con `ROL ADMIN` pueden acceder a este recurso)
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
 
 ### Endpoints para Playlist
-- **GET** `/playlist`
-  - Devuelve una lista de todas las playlist
-  - *RUTA PROTEGIDA* **ADMIN** (Los usuarios con `ROL ADMIN` pueden ver todas las playlist)
-- **GET** `/playlist/{idPlaylist}`
+*RUTA PROTEGIDA* Todas las rutas requieren que el usuario esté autenticado para acceder a las mismas.
+
+- **GET** `playlists/obtenerPlaylists`
+  - Devuelve una lista de todas las playlists
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL USER** (Usuarios con `ROL USER` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+- **GET** `/playlists/obtenerPlaylist/{id}`
   - Devuelve la playlist por id
-  - *RUTA PROTEGIDA* **ROL USER** (Los usuarios con `ROL USER` que sean propietarios de la playlist pueden buscar una playlist)
-  - *RUTA PROTEGIDA* **ROL ARTIST** (Los usuarios con `ROL ARTIST` que estén registrados correctamente podrán buscar una playlist)
-- **GET** `/playlist/{idPlaylist}/cancion`
-  - Añade una cancion a la playlist
-  - *RUTA PROTEGIDA* **AUTENTICATED** **ROL USER** (Solo usuarios con `ROL USER` que sean propietarios de la playlist pueden acceder a este recurso)
-- **POST** `/playlist`
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL USER** (Usuarios con `ROL USER` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+- **GET** `/playlists/obtenerPlaylist/{id}/{titulo}`
+  - Devuelve una cancion de la playlist
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL USER** (Usuarios con `ROL USER` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+- **POST** `/playlists/crearPlaylist`
   - Crea una playlist
-  - *RUTA PROTEGIDA* **ROL USER** (Solo usuarios con `ROL USER` pueden acceder a este recurso)
-- **PUT** `/playlist/{idPlaylist}`
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL USER** (Usuarios con `ROL USER` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+- **PUT** `/playlists/actualizarPlaylist/{id}`
   - Actualiza la playlist por identificador
-  - *RUTA PROTEGIDA* **ROL USER** (Solo usuarios con `ROL USER` que sean propietarios de la playlist pueden editar la playlist)
-- **DELETE** `/playlist/{idPlaylist}`
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL USER** (Usuarios con `ROL USER` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+- **PUT** `/playlists/agregarCancion/{id}`
+  - Agrega una cancion a la playlist
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL USER** (Usuarios con `ROL USER` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+- **DELETE** `/playlists/borrarPlaylist/{id}`
   - Borra una playlist por identificador
-  - *RUTA PROTEGIDA* **ROL USER** (Los usuarios con `ROL USER` que sean propietarios de la playlist pueden borrarla)
-  - *RUTA PROTEGIDA* **ADMIN** (Los usuarios con `ROL ADMIN` pueden eliminar cualquie playlist en caso de moderacion)
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL USER** (Usuarios con `ROL USER` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+- **DELETE** `/playlists/borrarCancion/{idPlaylist}/{idCancion}`
+  - Borra una cancion de la playlist
+  - **ROL ADMIN** (Usuarios con `ROL ADMIN` pueden acceder al recurso libremente)
+  - **ROL USER** (Usuarios con `ROL USER` pueden acceder al recurso libremente)
+  - **ROL ARTIST** (Usuarios con `ROL ARTIST` pueden acceder al recurso libremente)
+
+---
 
 ## 4. Validaciones
 
+| Campo                                                          | Regla de Validación                      | Código HTTP | Mensaje de Error                                                         |
+|----------------------------------------------------------------|------------------------------------------|-------------|--------------------------------------------------------------------------|
+| `username`, `username`, `breveDescripcion`, `artista`, `album` | No puede estar vacio                     | 400         | "El campo (nombre_campo) debe estar vacío."                              |
+| `totalCanciones`, `duracionTotal`, `duracion`                  | No puede ser menor que 0.                | 400         | "El campo (total canciones) no puede ser negativo."                      |
+| `cancion`                                                      | No puede ser nulo.                       | 400         | "Playlist's song can not be null."                                       |
+| `fechaPublicacion`                                             | No puede ser despues de la fecha actual. | 400         | "El campo (fecha publicacion) no puede ser posterior a la fecha actual." |
 
-## 5. Restricciones de seguridad
+---
+
+## 5. SQL de insercion de datos de prueba
+
+```sql
+INSERT INTO canciones (id_cancion, titulo, artista, album, duracion, fecha_publicacion)
+VALUES 
+    (1, 'Cancion Uno', 'Artista A', 'Album X', 210, '2023-05-01'),
+    (2, 'Cancion Dos', 'Artista B', 'Album Y', 180, '2023-06-15'),
+    (3, 'Cancion Tres', 'Artista C', 'Album Z', 240, '2023-07-10'),
+    (4, 'Cancion Cuatro', 'Artista D', 'Album W', 200, '2023-08-20'),
+    (5, 'Cancion Cinco', 'Artista E', 'Album V', 230, '2023-09-05');
+
+INSERT INTO playlists (id_playlist, titulo, breve_descripcion, total_canciones, duracion_total)
+VALUES 
+    (1, 'Hits del Verano', 'Las canciones más populares del verano para disfrutar en la playa o la piscina.', 15, 3600),
+    (2, 'Relax y Chill', 'Música relajante para desconectar después de un día largo.', 20, 5400),
+    (3, 'Rock Clásico', 'Los mejores éxitos del rock clásico que nunca pasan de moda.', 12, 4200);
+```
+
+
